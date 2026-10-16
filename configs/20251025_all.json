@@ -1,0 +1,36 @@
+{
+  "save": {
+    "dirs": ["calib_data", "20251025"],
+    "prefix": "",
+    "suffix": "all"
+  },
+  "fs": 100000,
+  "baseline": {
+    "volt": 0.11270646984829398
+  },
+  "sounds": [
+    {
+      "type": "nbn",
+      "duration": 1,
+      "taper": 0.01,
+      "freqs": [8000, 10000, 12000],
+      "band_width": 1000,
+
+      "volt_range": {
+        "v_start": 0.5,
+        "v_end": 3.5,
+        "num_points": 300
+      }
+    },
+    {
+      "type": "bbn",
+      "duration": 0.02,
+
+      "volt_range": {
+        "v_start": 0.01,
+        "v_end": 2.0,
+        "num_points": 100
+      }
+    }
+  ]
+}

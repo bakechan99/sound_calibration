@@ -1,0 +1,36 @@
+{
+  "save": {
+    "dirs": ["calib_data", "20261015_koseki2"],
+    "prefix": "",
+    "suffix": "all"
+  },
+  "fs": 200000,
+  "baseline": {
+    "volt": 0.362339376931064
+  },
+  "sounds": [
+    {
+      "type": "nbn",
+      "duration": 0.1,
+      "taper": 0.01,
+      "freqs": [8000],
+      "band_width": 1000,
+
+      "volt_range": {
+        "v_start": 0.5,
+        "v_end": 2.0,
+        "num_points": 10
+      }
+    },
+    {
+      "type": "bbn",
+      "duration": 0.1,
+
+      "volt_range": {
+        "v_start": 0.001,
+        "v_end": 3.0,
+        "num_points": 200
+      }
+    }
+  ]
+}
