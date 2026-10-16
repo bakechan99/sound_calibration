@@ -19,6 +19,7 @@ class VoltRangeConfig(_BaseModel):
 
 class NbnConfig(_BaseModel):
     type: _Literal["nbn"]
+    enabled: bool = True
     duration: float
     volt_range: VoltRangeConfig
 
@@ -31,6 +32,7 @@ class NbnConfig(_BaseModel):
 
 class BbnConfig(_BaseModel):
     type: _Literal["bbn"]
+    enabled: bool = True
     duration: float
     volt_range: VoltRangeConfig
 
@@ -90,6 +92,9 @@ class CalibConfig(_BaseModel):
         # フィルタの帯域が 0 < f < fs/2 に収まっているか確認
         nyquist = self.fs / 2
         for sound in self.sounds:
+            # 計測しない音はチェックしない
+            if not sound.enabled:
+                continue
             if sound.type == "nbn":
                 bands = [
                     (f - sound.band_width / 2, f + sound.band_width / 2)

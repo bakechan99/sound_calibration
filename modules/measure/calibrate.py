@@ -11,6 +11,10 @@ from .. import utils as _utils
 
 def calibrate(calib_config: _config.CalibConfig):
     for sound in calib_config.sounds:
+        if not sound.enabled:
+            print(f"Skip {sound.type} (enabled: false)")
+            continue
+
         if sound.type == "nbn":
             calib_func = calib_nbn
         elif sound.type == "bbn":
@@ -104,8 +108,6 @@ def calib_bbn(sound: _config.BbnConfig, calib_config: _config.CalibConfig):
             sound.taper,
         )
 
-        _play_and_rec(out_sound, calib_config)
-
         rec_signal = _play_and_rec(out_sound, calib_config)
 
         # 録音した信号のピーク値を計算
@@ -118,8 +120,8 @@ def calib_bbn(sound: _config.BbnConfig, calib_config: _config.CalibConfig):
         outdata["Vin"].append(rec_volt)
         outdata["dB"].append(rec_dB)
         signals[f"{volt}V"] = rec_signal
-    # 各音の再生後に1秒間の間隔を空ける
-    _time.sleep(1)
+        # 各音の再生後に1秒間の間隔を空ける
+        _time.sleep(1)
 
     outdata = _pd.DataFrame(outdata)
     signals = _pd.DataFrame(signals)

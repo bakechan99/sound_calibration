@@ -21,6 +21,7 @@
   "sounds": [
     {
       "type": "nbn",
+      "enabled": true,
       "duration": 0.1,
       "taper": 0.01,
       "freqs": [8000],
@@ -35,6 +36,7 @@
     },
     {
       "type": "bbn",
+      "enabled": true,
       "duration": 0.1,
       "taper": 0.01,
       "low_freq": 2000,

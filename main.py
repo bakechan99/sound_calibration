@@ -14,5 +14,5 @@ if __name__ == "__main__":
 
     calib_config = modules.config.CalibConfig(**config_data)
 
-    for sound in calib_config.sounds:
-        modules.measure.calibrate.calibrate(calib_config)
+    # calibrate() 内で全 sounds をループする
+    modules.measure.calibrate.calibrate(calib_config)
