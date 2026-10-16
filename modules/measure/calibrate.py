@@ -23,9 +23,9 @@ def calibrate(calib_config: _config.CalibConfig):
 
         # ピーク振幅とdBのデータを保存
 
-        rms_save_path = calib_config.save.get_save_path(f"{sound.type}_RMS.csv")
+        peak_save_path = calib_config.save.get_save_path(f"{sound.type}_peak.csv")
         calib_config.save.make_save_dir()
-        outdata.to_csv(rms_save_path, index=False)
+        outdata.to_csv(peak_save_path, index=False)
         # 生データを保存
         # 時間の配列を作成
         signals["Time"] = _utils.generate_time_array(
@@ -34,6 +34,13 @@ def calibrate(calib_config: _config.CalibConfig):
         signals.set_index("Time", inplace=True)
         signals_save_path = calib_config.save.get_save_path(f"{sound.type}_signals.csv")
         signals.to_csv(signals_save_path, index=True)
+
+
+def _play_and_rec(out_sound, calib_config: _config.CalibConfig):
+    daq = calib_config.daq
+    return _daq.play_and_rec(
+        out_sound, calib_config.fs, daq.device, daq.ai_ch, daq.ao_ch
+    )
 
 
 def calib_nbn(sound: _config.NbnConfig, calib_config: _config.CalibConfig):
@@ -54,16 +61,13 @@ def calib_nbn(sound: _config.NbnConfig, calib_config: _config.CalibConfig):
                 sound.duration,
                 sound.taper,
                 calib_config.fs,
+                sound.filter_order,
             )
 
-            # _daq.play_and_rec(out_sound, calib_config.fs)
+            rec_signal = _play_and_rec(out_sound, calib_config)
 
-            rec_signal = _daq.play_and_rec(out_sound, calib_config.fs)
-
-            # 録音した信号の実効値を計算
-            signal_zero_mean = rec_signal - _np.mean(rec_signal)
-
-            rec_volt = _np.sqrt(_np.mean(signal_zero_mean**2))
+            # 録音した信号のピーク値を計算
+            rec_volt = _utils.peak_volt(rec_signal)
 
             rec_dB = _utils.volt_to_dB(rec_volt, calib_config.baseline.volt)
 
@@ -94,14 +98,18 @@ def calib_bbn(sound: _config.BbnConfig, calib_config: _config.CalibConfig):
             volt,
             sound.duration,
             calib_config.fs,
+            sound.low_freq,
+            sound.high_freq,
+            sound.filter_order,
+            sound.taper,
         )
 
-        _daq.play_and_rec(out_sound, calib_config.fs)
+        _play_and_rec(out_sound, calib_config)
 
-        rec_signal = _daq.play_and_rec(out_sound, calib_config.fs)
+        rec_signal = _play_and_rec(out_sound, calib_config)
 
-        signal_zero_mean = rec_signal - _np.mean(rec_signal)
-        rec_volt = _np.sqrt(_np.mean(signal_zero_mean**2))
+        # 録音した信号のピーク値を計算
+        rec_volt = _utils.peak_volt(rec_signal)
 
         rec_dB = _utils.volt_to_dB(rec_volt, calib_config.baseline.volt)
 

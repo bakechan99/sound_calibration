@@ -1,0 +1,51 @@
+{
+  "save": {
+    "dirs": ["calib_data", "master"],
+    "prefix": "",
+    "suffix": "all"
+  },
+  "fs": 200000,
+  "baseline": {
+    "volt": 0.35260864128988734
+  },
+  "daq": {
+    "device": "Dev2",
+    "ai_ch": "ai0",
+    "ao_ch": "ao0"
+  },
+  "reference": {
+    "fs": 44100,
+    "duration": 1.0,
+    "file": "94dB_reference.csv"
+  },
+  "sounds": [
+    {
+      "type": "nbn",
+      "duration": 0.1,
+      "taper": 0.01,
+      "freqs": [8000],
+      "band_width": 1000,
+      "filter_order": 4,
+
+      "volt_range": {
+        "v_start": 0.5,
+        "v_end": 2.0,
+        "num_points": 10
+      }
+    },
+    {
+      "type": "bbn",
+      "duration": 0.1,
+      "taper": 0.01,
+      "low_freq": 2000,
+      "high_freq": 64000,
+      "filter_order": 4,
+
+      "volt_range": {
+        "v_start": 0.001,
+        "v_end": 3.0,
+        "num_points": 200
+      }
+    }
+  ]
+}

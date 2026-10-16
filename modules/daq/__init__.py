@@ -4,9 +4,9 @@ import numpy as _np
 def play_and_rec(
       out_sig: _np.ndarray,
       fs: float,
-      device_str: str = "Dev2",
-      ai_ch_str: str = "ai0",
-      ao_ch_str: str = "ao0",
+      device_str: str,
+      ai_ch_str: str,
+      ao_ch_str: str,
 
 ):
     ai_str = f"{device_str}/{ai_ch_str}"

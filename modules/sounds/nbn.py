@@ -12,6 +12,7 @@ def generate_nbn(
     duration: float,
     taper_dur: float,
     fs: float,
+    filter_order: int,
 ):
     # ホワイトノイズを生成
     noise = _soundbase.generate_whitenoise_base(duration, fs)
@@ -20,7 +21,7 @@ def generate_nbn(
     nyquist = fs / 2
     low = (freq - band_width / 2) / nyquist
     high = (freq + band_width / 2) / nyquist
-    b, a = signal.butter(4, [low, high], "band")
+    b, a = signal.butter(filter_order, [low, high], "band")
 
     # ノイズにフィルタをかける
     filtered_noise = signal.lfilter(b, a, noise)

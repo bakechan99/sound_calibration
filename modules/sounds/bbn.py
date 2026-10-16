@@ -3,15 +3,23 @@ import scipy.signal as signal
 import numpy as _np
 
 
-def generate_whitenoise(amplitude: float, duration: float, fs: float):
+def generate_whitenoise(
+    amplitude: float,
+    duration: float,
+    fs: float,
+    low_freq: float,
+    high_freq: float,
+    filter_order: int,
+    taper_dur: float,
+):
     # ホワイトノイズを生成
     noise = _soundbase.generate_whitenoise_base(duration, fs)
 
-    #2k~64kHzの幅で作成
+    #low_freq~high_freqの幅で作成
     nyquist = fs / 2
-    low = 2000 / nyquist
-    high = 64000 / nyquist
-    b, a = signal.butter(4, [low, high], "band")
+    low = low_freq / nyquist
+    high = high_freq / nyquist
+    b, a = signal.butter(filter_order, [low, high], "band")
 
     # ノイズにフィルタをかける
     filtered_noise = signal.lfilter(b, a, noise)
@@ -23,7 +31,7 @@ def generate_whitenoise(amplitude: float, duration: float, fs: float):
     out_sound *= amplitude
 
     # テーパーを適用
-    out_sound = _taper.apply_taper(out_sound, 0.01, fs)
+    out_sound = _taper.apply_taper(out_sound, taper_dur, fs)
 
 
     # # 振幅を適用
