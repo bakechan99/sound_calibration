@@ -43,7 +43,20 @@ class BbnConfig(_BaseModel):
     filter_order: int = 4
 
 
-SoundConfig = _Union[NbnConfig, BbnConfig]
+class ClickConfig(_BaseModel):
+    type: _Literal["click"]
+    enabled: bool = True
+    # 1音あたりのデータ取得区間（この中にクリックを1発置く）
+    duration: float = 1.0
+    volt_range: VoltRangeConfig
+
+    # click 専用
+    width: float = 0.0001  # パルス幅 [s]
+    onset: float = 0.01  # 区間の先頭からクリックまでの無音 [s]
+    polarity: _Literal["pos", "neg"] = "pos"
+
+
+SoundConfig = _Union[NbnConfig, BbnConfig, ClickConfig]
 
 
 class DaqConfig(_BaseModel):
@@ -95,6 +108,9 @@ class CalibConfig(_BaseModel):
             # 計測しない音はチェックしない
             if not sound.enabled:
                 continue
+            if sound.type == "click":
+                self._check_click(sound)
+                continue
             if sound.type == "nbn":
                 bands = [
                     (f - sound.band_width / 2, f + sound.band_width / 2)
@@ -109,3 +125,18 @@ class CalibConfig(_BaseModel):
                         f"0 < low < high < fs/2 ({nyquist}Hz)"
                     )
         return self
+
+    def _check_click(self, sound: ClickConfig):
+        # パルス幅がサンプル数の整数倍になっているか確認
+        n_width = sound.width * self.fs
+        if round(n_width) < 1 or abs(n_width - round(n_width)) > 1e-6:
+            raise ValueError(
+                f"click: width {sound.width}s is not an integer number of "
+                f"samples at fs={self.fs}Hz ({n_width} samples)"
+            )
+        # クリックが区間内に収まり，最後が0Vで終わるか確認
+        if not (0 < sound.onset and sound.onset + sound.width < sound.duration):
+            raise ValueError(
+                f"click: must satisfy 0 < onset and onset + width < duration "
+                f"(onset={sound.onset}, width={sound.width}, duration={sound.duration})"
+            )

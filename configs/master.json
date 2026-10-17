@@ -48,6 +48,20 @@
         "v_end": 3.0,
         "num_points": 200
       }
+    },
+    {
+      "type": "click",
+      "enabled": true,
+      "duration": 1.0,
+      "width": 0.0001,
+      "onset": 0.01,
+      "polarity": "pos",
+
+      "volt_range": {
+        "v_start": 0.1,
+        "v_end": 2.0,
+        "num_points": 200
+      }
     }
   ]
 }
