@@ -6,7 +6,7 @@ import modules.measure
 import modules.measure.calibrate
 
 if __name__ == "__main__":
-    json_path = os.path.join("configs", "master.json")
+    json_path = os.path.join("configs", "20261017_all.json")
 
     # jsonファイルの内容を取得
     with open(json_path, "r") as file:
